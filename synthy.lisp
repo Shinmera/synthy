@@ -14,7 +14,8 @@
    (rise-time :initform 0.5 :accessor rise-time)
    (keep-time :initform 0.2 :accessor keep-time)
    (fall-time :initform 1.0 :accessor fall-time)
-   (wave-form :initform :sine :accessor wave-form)))
+   (wave-form :initform :sine :accessor wave-form)
+   (volume :initform 0.2 :accessor volume)))
 
 (defmethod mixed:info ((synth synth))
   '(:name "Synth"
@@ -35,18 +36,18 @@
         (clock (input-clock input)))
     (flet ((generate ()
              (let* ((frequency (key-frequency (input-key input)))
-                    (length (/ frequency 44100.0)))
+                    (length (max 0.0000000001 (/ frequency 44100.0))))
                (* level
                   (ecase (wave-form synth)
                     (:sine
                      (sin (float (* 2 PI frequency clock) 0f0)))
                     (:square
-                     (if (< (mod clock length) (/ length 2.0)) +1.0 -1.0))
+                     (* (if (< (mod clock length) (/ length 2.0)) +1.0 -1.0) 0.5))
                     (:triangle
                      (let ((tmp (/ (mod clock length) length)))
                        (1- (* 4 (if (< 0.5 tmp) (- 1 tmp) tmp)))))
                     (:sawtooth
-                     (1- (* 2 (/ (mod clock length) length))))))))
+                     (* (1- (* 2 (/ (mod clock length) length))) 0.5))))))
            (handle-state (max-time next level-change)
              (cond ((<= (+ (input-state-start input) max-time) clock)
                     (setf (input-state input) next)
@@ -75,7 +76,7 @@
          (lbuf (aref outputs 0))
          (rbuf (aref outputs 1))
          (dt (/ 1.0 mixed:*default-samplerate*))
-         (volume 0.2))
+         (volume (volume synth)))
     (mixed:with-buffer-tx (l lstart size lbuf :direction :output)
       (mixed:with-buffer-tx (r rstart size rbuf :direction :output :size size)
         (loop for i from 0 below size
