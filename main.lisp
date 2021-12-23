@@ -35,5 +35,5 @@
          :context #+arm64 '(:glsl-version "300"
                             :version (3 1)
                             :profile :es)
-                  ()
+                  #-arm64 ()
                   initargs))
