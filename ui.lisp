@@ -41,7 +41,7 @@
   (let ((layout (make-instance 'alloy:fullscreen-layout :layout-parent (alloy:layout-tree pass)))
         (focus (make-instance 'alloy:focus-list :focus-parent (alloy:focus-tree pass)))
         (synth (synth +main+)))
-    (let ((props (make-instance 'alloy:grid-layout :col-sizes '(200 300) :row-sizes '(30) :layout-parent layout))
+    (let ((props (make-instance 'alloy:grid-layout :col-sizes '(200 T) :row-sizes '(30) :layout-parent layout))
           (wave (alloy:represent (wave-form synth) 'alloy:combo-set :value-set '(:sine :square :triangle :sawtooth) :focus-parent focus))
           (rise (alloy:represent (rise-time synth) 'alloy:ranged-slider :range '(0.0 . 2.0) :focus-parent focus))
           (keep (alloy:represent (keep-time synth) 'alloy:ranged-slider :range '(0.0 . 2.0) :focus-parent focus))

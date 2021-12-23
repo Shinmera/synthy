@@ -32,7 +32,8 @@
 
 (defun launch (&rest initargs)
   (apply #'trial:launch 'main
-         :context '(:glsl-version "300"
-                    :version (3 1)
-                    :profile :es)
-         initargs))
+         :context #+arm64 '(:glsl-version "300"
+                            :version (3 1)
+                            :profile :es)
+                  ()
+                  initargs))

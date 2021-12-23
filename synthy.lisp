@@ -96,8 +96,10 @@
     (ecase state
       (:down
        (if input
-           (setf (input-clock input) 0.0
-                 (input-state input) :rise)
+           (unless (or (eql :rise (input-state input))
+                       (eql :hold (input-state input)))
+             (setf (input-clock input) 0.0
+                   (input-state input) :rise))
            (push (make-input key) (keys synth))))
       (:up
        (when input
