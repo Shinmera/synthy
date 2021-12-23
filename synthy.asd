@@ -1,4 +1,5 @@
 (asdf:defsystem synthy
+  :serial T
   :components ((:file "package")
                (:file "toolkit")
                (:file "synthy")
@@ -6,4 +7,8 @@
                (:file "ui"))
   :depends-on (:trial-glfw
                :trial-harmony
-               :trial-alloy))
+               :trial-alloy)
+  :build-operation "deploy-op"
+  :build-pathname "synthy"
+  :entry-point "org.shirakumo.synthy:launch"
+  :defsystem-depends-on (:deploy))
