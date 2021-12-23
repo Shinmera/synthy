@@ -21,8 +21,9 @@
 
 (defmethod trial:finalize :after ((main main))
   (setf +main+ NIL)
-  (mixed:end harmony:*server*)
-  (mixed:free harmony:*server*))
+  (when harmony:*server*
+    (mixed:end harmony:*server*)
+    (mixed:free harmony:*server*)))
 
 (defmethod trial:handle ((ev trial:key-event) (main main))
   (typecase ev
@@ -30,4 +31,8 @@
     (trial:key-release (synth-input (synth main) (trial:key ev) :up))))
 
 (defun launch (&rest initargs)
-  (apply #'trial:launch 'main initargs))
+  (apply #'trial:launch 'main
+         :context '(:glsl-version "300"
+                    :version (3 1)
+                    :profile :es)
+         initargs))
